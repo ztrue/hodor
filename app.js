@@ -18,11 +18,20 @@ var wifiTimeout = 30;
 var url = 'http://10.231.15.31:8080';
 var audioPath = 'hodor3.mp3';
 
-var volume = .83;
+var audioPaths = [
+  'hodor1.mp3',
+  'hodor2.mp3',
+  'hodor3.mp3',
+  'hodor4.mp3',
+  'hodor5.mp3',
+  'hodor6.mp3',
+];
+
+var volume = .8;
 var accuracyX = 0.1;
 var accuracyY = 0.1;
 var accuracyZ = 0.1;
-var hodorInterval = 4 * 1000;
+var hodorInterval = 3 * 1000;
 
 var lastX = 0;
 var lastY = 0;
@@ -30,6 +39,8 @@ var lastZ = 1;
 var lastHodor = 0;
 var timeoutsNumber = 0;
 var audioFile = null;
+var audioFiles = [];
+var currentAudio = 0;
 
 led1.output(0);
 led2.output(0);
@@ -102,20 +113,8 @@ accel.on('ready', function () {
 
     var move = moveX || moveY || moveZ;
 
-    var output = '';
-    if (moveX) {
-      output += 'x ' + diffX + '; ';
-    }
-    if (moveY) {
-      output += 'y ' + diffY + '; ';
-    }
-    if (moveZ) {
-      output += 'z ' + diffZ + '; ';
-    }
-
     if (move) {
       hodor();
-      // log(output);
     }
 
     lastX = xyz[0];
@@ -136,7 +135,10 @@ audio.on('ready', function() {
       return log(err);
     }
     log('reading audio...');
-    audioFile = fs.readFileSync(audioPath);
+    // audioFile = fs.readFileSync(audioPath);
+    audioPaths.forEach(function (audioPath) {
+      audioFiles.push(fs.readFileSync(audioPath));
+    });
     log('audio read');
   });
 });
@@ -152,7 +154,8 @@ function hodor() {
     log('HODOR');
     lastHodor = time;
 
-    if (audioFile) {
+    if (audioFiles.length) {
+      var audioFile = audioFiles[Math.floor(Math.random() * audioFiles.length)];
       log('play audio');
       audio.play(audioFile, function(err) {
         if (err) {
