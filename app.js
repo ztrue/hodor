@@ -29,35 +29,41 @@ var lastY = 0;
 var lastZ = 1;
 var lastHodor = 0;
 var timeoutsNumber = 0;
+var audioFile = null;
 
 led1.output(0);
 led2.output(0);
 
 log('run');
 
-wifi.on('connect', function (data) {
-  log('wifi connected', data);
-});
-wifi.on('disconnect', function(data) {
-  log('wifi disconnected', data);
-  connect();
-});
-wifi.on('timeout', function(err) {
-  log('wifi connection timeout, isConnected =', wifi.isConnected(), err);
+// wifi.on('connect', function (data) {
+//   log('wifi connected', data);
+// });
+// wifi.on('disconnect', function(data) {
+//   log('wifi disconnected', data);
+//   connect();
+// });
+// wifi.on('timeout', function(err) {
+//   log('wifi connection timeout, isConnected =', wifi.isConnected(), err);
+//
+//   if (!wifi.isConnected()) {
+//     log('when not connected');
+//     timeoutsNumber++;
+//     if (timeoutsNumber > 2) {
+//       powerCycle();
+//     } else {
+//       connect();
+//     }
+//   }
+// });
+// wifi.on('error', function (err) {
+//   log('error', err);
+// });
 
-  if (!wifi.isConnected()) {
-    log('when not connected');
-    timeoutsNumber++;
-    if (timeoutsNumber > 2) {
-      powerCycle();
-    } else {
-      connect();
-    }
-  }
-});
-wifi.on('error', function (err) {
-  log('error', err);
-});
+// connect wifi now, if not already connected
+// if (!wifi.isConnected()) {
+//   connect();
+// }
 
 led1.output(1);
 led2.output(1);
@@ -67,6 +73,18 @@ led1.output(1);
 led2.output(1);
 led1.output(0);
 led2.output(0);
+led1.output(1);
+led2.output(1);
+led1.output(0);
+led2.output(0);
+led1.output(1);
+led2.output(1);
+led1.output(0);
+led2.output(0);
+
+// setInterval(function () {
+//   led2.toggle();
+// }, 300);
 
 // Initialize the accelerometer.
 accel.on('ready', function () {
@@ -110,8 +128,6 @@ accel.on('ready', function () {
 accel.on('error', function(err){
   log('Error:', err);
 });
-
-var audioFile = null;
 
 audio.on('ready', function() {
   log('audio ready');
@@ -190,11 +206,6 @@ function connect() {
     password: wifiPassword,
     timeout: wifiTimeout
   });
-}
-
-// connect wifi now, if not already connected
-if (!wifi.isConnected()) {
-  connect();
 }
 
 function log() {
