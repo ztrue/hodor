@@ -5,6 +5,8 @@ var led1 = tessel.led[0];
 var led2 = tessel.led[1];
 var wifi = require('wifi-cc3000');
 
+var logEnable = true;
+
 var network = 'Hackathon';
 var wifiPassword = 'h@ckCUT16';
 var security = 'wpa2';
@@ -22,28 +24,30 @@ var lastZ = 1;
 var lastHodor = 0;
 var timeoutsNumber = 0;
 
+log('run');
+
 wifi.on('connect', function (data) {
-  console.log('wifi connected', data);
+  log('wifi connected', data);
 });
 wifi.on('disconnect', function(data) {
-  console.log('wifi disconnected', data);
-  // connect();
+  log('wifi disconnected', data);
+  connect();
 });
 wifi.on('timeout', function(err) {
-  console.log('wifi connection timeout, isConnected =', wifi.isConnected());
+  log('wifi connection timeout, isConnected =', wifi.isConnected());
 
-  // if (!wifi.isConnected()) {
-  //   console.log('when not connected');
-  //   timeoutsNumber++;
-  //   if (timeoutsNumber > 2) {
-  //     powerCycle();
-  //   } else {
-  //     connect();
-  //   }
-  // }
+  if (!wifi.isConnected()) {
+    log('when not connected');
+    timeoutsNumber++;
+    if (timeoutsNumber > 2) {
+      powerCycle();
+    } else {
+      connect();
+    }
+  }
 });
 wifi.on('error', function (err) {
-  console.log('error', err);
+  log('error', err);
 });
 
 led1.output(0);
@@ -77,7 +81,7 @@ accel.on('ready', function () {
 
     if (move) {
       hodor();
-      // console.log(output);
+      // log(output);
     }
 
     lastX = xyz[0];
@@ -88,7 +92,7 @@ accel.on('ready', function () {
 });
 
 accel.on('error', function(err){
-  console.log('Error:', err);
+  log('Error:', err);
 });
 
 function hodor() {
@@ -99,46 +103,56 @@ function hodor() {
 
   var time = Date.now();
 
-  if (time - lastHodor > hodorInterval && wifi.isConnected()) {
-    console.log('Hodor');
+  if (time - lastHodor > hodorInterval) {
+    log('Hodor');
     lastHodor = time;
-    http.get(url, function (response) {
-      console.log('response', response.statusCode);
-      response.resume();
-    }).on('error', function (err) {
-      console.log('http error', err.message);
-    });
+    if (wifi.isConnected()) {
+      http.get(url, function (response) {
+        log('response', response.statusCode);
+        response.resume();
+      }).on('error', function (err) {
+       log('http error', err.message);
+      });
+    } else {
+      log('wifi not connected');
+    }
   }
 }
 
-// // reset the wifi chip progammatically
-// function powerCycle() {
-//   // when the wifi chip resets, it will automatically try to reconnect
-//   // to the last saved network
-//   wifi.reset(function() {
-//     timeoutsNumber = 0;
-//     console.log('done power cycling');
-//     // give it some time to auto reconnect
-//     setTimeout(function() {
-//       if (!wifi.isConnected()) {
-//         // try to reconnect
-//         connect();
-//       }
-//     }, 20 * 1000); // 20 second wait
-//   })
-// }
-//
-// function connect() {
-//   console.log('connecting...');
-//   wifi.connect({
-//     security: security,
-//     ssid: network,
-//     password: wifiPassword,
-//     timeout: wifiTimeout
-//   });
-// }
-//
-// // connect wifi now, if not already connected
-// if (!wifi.isConnected()) {
-//   connect();
-// }
+// reset the wifi chip progammatically
+function powerCycle() {
+  // when the wifi chip resets, it will automatically try to reconnect
+  // to the last saved network
+  wifi.reset(function() {
+    timeoutsNumber = 0;
+    log('done power cycling');
+    // give it some time to auto reconnect
+    setTimeout(function() {
+      if (!wifi.isConnected()) {
+        // try to reconnect
+        connect();
+      }
+    }, 20 * 1000); // 20 second wait
+  });
+}
+
+function connect() {
+  log('connecting...');
+  wifi.connect({
+    security: security,
+    ssid: network,
+    password: wifiPassword,
+    timeout: wifiTimeout
+  });
+}
+
+// connect wifi now, if not already connected
+if (!wifi.isConnected()) {
+  connect();
+}
+
+function log() {
+  if (logEnable) {
+    console.log.apply(console, arguments)
+  }
+}
