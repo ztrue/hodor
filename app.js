@@ -26,6 +26,9 @@ var lastZ = 1;
 var lastHodor = 0;
 var timeoutsNumber = 0;
 
+led1.output(0);
+led2.output(0);
+
 log('run');
 
 wifi.on('connect', function (data) {
@@ -52,14 +55,21 @@ wifi.on('error', function (err) {
   log('error', err);
 });
 
+led1.output(1);
+led2.output(1);
+led1.output(0);
+led2.output(0);
+led1.output(1);
+led2.output(1);
 led1.output(0);
 led2.output(0);
 
 // Initialize the accelerometer.
 accel.on('ready', function () {
-  led1.toggle();
+  led1.output(1);
     // Stream accelerometer data
   accel.on('data', function (xyz) {
+    led1.toggle();
     var diffX = parseFloat(Math.abs(xyz[0] - lastX).toFixed(2));
     var diffY = parseFloat(Math.abs(xyz[1] - lastY).toFixed(2));
     var diffZ = parseFloat(Math.abs(xyz[2] - lastZ).toFixed(2));
@@ -98,10 +108,7 @@ accel.on('error', function(err){
 });
 
 function hodor() {
-  led2.toggle();
-  led2.toggle();
-  led2.toggle();
-  led2.toggle();
+  led2.output(1);
 
   var time = Date.now();
 
@@ -119,6 +126,8 @@ function hodor() {
       log('wifi not connected');
     }
   }
+
+  led2.output(0);
 }
 
 // reset the wifi chip progammatically
