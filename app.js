@@ -146,8 +146,6 @@ audio.on('error', function(err) {
 });
 
 function hodor() {
-  led2.output(1);
-
   var time = Date.now();
 
   if (time - lastHodor > hodorInterval) {
@@ -166,6 +164,8 @@ function hodor() {
     }
 
     if (wifi.isConnected()) {
+      led2.output(1);
+
       log('api request...');
       http.get(url, function (response) {
         log('response', response.statusCode);
@@ -173,12 +173,12 @@ function hodor() {
       }).on('error', function (err) {
        log('http error', err.message);
       });
+
+      led2.output(0);
     } else {
       log('wifi not connected');
     }
   }
-
-  led2.output(0);
 }
 
 // reset the wifi chip progammatically
