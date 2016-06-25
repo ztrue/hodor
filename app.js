@@ -1,6 +1,8 @@
 var http = require('http');
+var fs = require('fs');
 var tessel = require('tessel');
 var accel = require('accel-mma84').use(tessel.port['A']);
+var audio = require('audio-vs1053b').use(tessel.port['B']);
 var led1 = tessel.led[0];
 var led2 = tessel.led[1];
 var wifi = require('wifi-cc3000');
@@ -13,8 +15,10 @@ var network = 'allx iPhone';
 var wifiPassword = '20022002';
 var security = 'wpa2';
 var wifiTimeout = 30;
-
 var url = 'http://10.231.15.31:8080';
+var audioPath = __dirname + '/hodor4.mp3';
+
+var volume = .5;
 var accuracyX = 0.03;
 var accuracyY = 0.03;
 var accuracyZ = 0.03;
@@ -107,15 +111,46 @@ accel.on('error', function(err){
   log('Error:', err);
 });
 
+var audioFile = null;
+
+audio.on('ready', function() {
+  log('audio ready');
+  audio.setVolume(volume, function(err) {
+    if (err) {
+      return log(err);
+    }
+    log('reading audio...');
+    audioFile = fs.readFileSync(audioPath);
+    log('audio read');
+  });
+});
+
+audio.on('error', function(err) {
+  log(err);
+});
+
 function hodor() {
   led2.output(1);
 
   var time = Date.now();
 
   if (time - lastHodor > hodorInterval) {
-    log('Hodor');
+    log('HODOR');
     lastHodor = time;
+
+    if (audioFile) {
+      log('play audio');
+      audio.play(audioFile, function(err) {
+        if (err) {
+          log(err);
+        } else {
+          log('done playing', audioFile);
+        }
+      });
+    }
+
     if (wifi.isConnected()) {
+      log('api request...');
       http.get(url, function (response) {
         log('response', response.statusCode);
         response.resume();
