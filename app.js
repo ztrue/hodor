@@ -7,8 +7,10 @@ var wifi = require('wifi-cc3000');
 
 var logEnable = true;
 
-var network = 'Hackathon';
-var wifiPassword = 'h@ckCUT16';
+// var network = 'Hackathon';
+// var wifiPassword = 'h@ckCUT16';
+var network = 'allx iPhone';
+var wifiPassword = '20022002';
 var security = 'wpa2';
 var wifiTimeout = 30;
 
@@ -34,7 +36,7 @@ wifi.on('disconnect', function(data) {
   connect();
 });
 wifi.on('timeout', function(err) {
-  log('wifi connection timeout, isConnected =', wifi.isConnected());
+  log('wifi connection timeout, isConnected =', wifi.isConnected(), err);
 
   if (!wifi.isConnected()) {
     log('when not connected');
