@@ -5,9 +5,9 @@ an audio file out over Headphones/Line out
 
 var tessel = require('tessel');
 var fs = require('fs');
-var audio = require('audio-vs1053b').use(tessel.port['A']);
+var audio = require('audio-vs1053b').use(tessel.port['B']);
 
-var audioFile = 'sample.mp3';
+var audioFile = 'hodor4.mp3';
 
 // Wait for the module to connect
 audio.on('ready', function() {
