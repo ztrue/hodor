@@ -16,12 +16,12 @@ var wifiPassword = '20022002';
 var security = 'wpa2';
 var wifiTimeout = 30;
 var url = 'http://10.231.15.31:8080';
-var audioPath = 'hodor4.mp3';
+var audioPath = 'hodor3.mp3';
 
-var volume = .8;
-var accuracyX = 0.03;
-var accuracyY = 0.03;
-var accuracyZ = 0.03;
+var volume = .83;
+var accuracyX = 0.1;
+var accuracyY = 0.1;
+var accuracyZ = 0.1;
 var hodorInterval = 4 * 1000;
 
 var lastX = 0;
