@@ -19,10 +19,10 @@ var url = 'http://13.94.44.219:8088';
 var audioPath = 'hodor3.mp3';
 
 var audioPaths = [
-  'hodor1.mp3',
+  // 'hodor1.mp3',
   'hodor2.mp3',
   'hodor3.mp3',
-  'hodor4.mp3',
+  // 'hodor4.mp3',
   'hodor5.mp3',
   'hodor6.mp3',
 ];
@@ -175,13 +175,14 @@ function hodor() {
     lastHodor = time;
 
     if (audioFiles.length) {
-      var audioFile = audioFiles[Math.floor(Math.random() * audioFiles.length)];
+      var audioFileIndex = Math.floor(Math.random() * audioFiles.length);
+      var audioFile = audioFiles[audioFileIndex];
       log('play audio');
       audio.play(audioFile, function(err) {
         if (err) {
           log(err);
         } else {
-          log('done playing', audioFile);
+          log('done playing', audioFileIndex);
         }
       });
     }
