@@ -164,6 +164,16 @@ function newVolume() {
     ? quietVolume
     : loudVolume;
 
+  // LOUD VOLUME, BE CAREFULL
+  if (volume === loudVolume) {
+    led2.toggle();
+    led2.toggle();
+    led2.toggle();
+    led2.toggle();
+    led2.toggle();
+    led2.toggle();
+  }
+
   return volume;
 }
 
