@@ -15,7 +15,7 @@ var network = 'allx iPhone';
 var wifiPassword = '20022002';
 var security = 'wpa2';
 var wifiTimeout = 30;
-var url = 'http://13.94.44.219:88';
+var url = 'http://13.94.44.219:8088';
 var audioPath = 'hodor3.mp3';
 
 var audioPaths = [
