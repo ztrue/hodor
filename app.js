@@ -15,7 +15,7 @@ var network = 'allx iPhone';
 var wifiPassword = '20022002';
 var security = 'wpa2';
 var wifiTimeout = 30;
-var url = 'http://10.231.15.31:8080';
+var url = 'http://13.94.44.219:88';
 var audioPath = 'hodor3.mp3';
 
 var audioPaths = [
@@ -28,6 +28,8 @@ var audioPaths = [
 ];
 
 var volume = .8;
+var quietVolume = .8;
+var loudVolume = 1;
 var accuracyX = 0.1;
 var accuracyY = 0.1;
 var accuracyZ = 0.1;
@@ -132,7 +134,7 @@ audio.on('ready', function() {
   log('audio ready');
   audio.setVolume(volume, function(err) {
     if (err) {
-      return log(err);
+      return log('set volume err', err);
     }
     log('reading audio...');
     // audioFile = fs.readFileSync(audioPath);
@@ -146,6 +148,24 @@ audio.on('ready', function() {
 audio.on('error', function(err) {
   log(err);
 });
+
+tessel.button.on('press', function () {
+  audio.setVolume(newVolume(), function(err) {
+    if (err) {
+      log('set volume err', err);
+    } else {
+      log('volume set', volume);
+    }
+  });
+});
+
+function newVolume() {
+  volume = volume === loudVolume
+    ? quietVolume
+    : loudVolume;
+
+  return volume;
+}
 
 function hodor() {
   var time = Date.now();
